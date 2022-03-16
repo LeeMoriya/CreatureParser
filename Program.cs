@@ -65,8 +65,29 @@ namespace CreatureParser
                                 spawns.Add("All", new Dictionary<string, int>());
                             }
                             //Discard room name and get creature list
-                            if(lines[i].StartsWith("LINEAGE"))
-                            string[] crits = Regex.Split(lines[i], ":");
+                            if (!lines[i].StartsWith("LINEAGE"))
+                            {
+                                string critLine = Regex.Split(lines[i], ":")[1];
+                                string[] crits = Regex.Split(critLine, ",");
+                                for (int c = 0; c < crits.Length; c++)
+                                {
+                                    string creature = Regex.Split(crits[c], "-")[1];
+                                    int amount = 1;
+                                    if(Regex.Split(crits[c], "-").Length >= 3 && Regex.Split(crits[c], "-")[2] != "" && !Regex.Split(crits[c], "-")[2].StartsWith("{"))
+                                    {
+                                        amount = int.Parse(Regex.Split(crits[c], "-")[2]);
+                                    }
+                                    //Creature not in list
+                                    if (!spawns["All"].ContainsKey(creature))
+                                    {
+                                        spawns["All"].Add(creature, amount);
+                                    }
+                                    else
+                                    {
+                                        spawns["All"][creature] += amount;
+                                    }
+                                }
+                            }
                         }
                         Console.WriteLine(lines[i]);
                     }
@@ -74,6 +95,17 @@ namespace CreatureParser
                 if (lines[i].StartsWith("CREATURES"))
                 {
                     creatures = true;
+                }
+            }
+            Console.WriteLine();
+            Console.WriteLine("--------------------------");
+            for (int i = 0; i < spawns.Keys.Count; i++)
+            {
+                Console.WriteLine("["+ spawns.ElementAt(i).Key + "]");
+                //Each creature
+                for (int c = 0; c < spawns.ElementAt(i).Value.Keys.Count; c++)
+                {
+                    Console.WriteLine(spawns.ElementAt(i).Value.ElementAt(c).Key + " x" + spawns.ElementAt(i).Value.ElementAt(c).Value);
                 }
             }
             Console.ReadLine();
