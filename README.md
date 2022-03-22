@@ -12,3 +12,4 @@ Basic command line tool for parsing World files and listing what creatures spawn
 ## What it doesn't do:
 - Parses Custom Regions
 - Tell you what regions are actually accessible by each slugcat.
+- Parse special creatures that are manually placed by dev tools.
